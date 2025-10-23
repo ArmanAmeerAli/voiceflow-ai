@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('transcriptions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('title');
+            $table->string('audio_file_path');
+            $table->text('transcription')->nullable();
+            $table->enum('status', ['pending', 'processing', 'completed', 'failed'])->default('pending');
+            $table->text('error_message')->nullable();
             $table->timestamps();
         });
     }
