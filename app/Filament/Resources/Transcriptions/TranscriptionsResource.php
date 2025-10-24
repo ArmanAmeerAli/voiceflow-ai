@@ -15,6 +15,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class TranscriptionsResource extends Resource
 {
@@ -54,5 +56,11 @@ class TranscriptionsResource extends Resource
             'view' => ViewTranscriptions::route('/{record}'),
             'edit' => EditTranscriptions::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', Auth::id());
     }
 }
