@@ -10,6 +10,10 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Support\Str;
 use App\Models\Transcriptions;
+use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\DateTimePicker;
+
 
 class TranscriptionsForm
 {
@@ -17,13 +21,25 @@ class TranscriptionsForm
     {
         return $schema
             ->schema([
+                Select::make('project_id')
+                    ->label('Project')
+                    ->required()
+                    ->options(
+                        fn() => Project::query()
+                            ->where('user_id', Auth::id())
+                            ->pluck('name', 'id')
+                            ->all()
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->native(false),
                 TextInput::make('title')
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, callable $set) {
-                            $set('slug', Str::slug($state));
-                        }),
+                        $set('slug', Str::slug($state));
+                    }),
 
                 FileUpload::make('audio_file_path')
                     ->label('Audio File')
@@ -43,7 +59,7 @@ class TranscriptionsForm
                     ->native(false)
                     ->searchable()
                     ->in(Transcriptions::getStatusOptions())
-                    ->hidden(fn (string $operation) => $operation !== 'edit'),
+                    ->hidden(fn(string $operation) => $operation !== 'edit'),
 
                 Textarea::make('transcription')
                     ->label('Transcription Text')
@@ -51,7 +67,7 @@ class TranscriptionsForm
                     ->rows(5)
                     ->maxLength(65535)
                     ->columnSpanFull()
-                    ->hidden(fn (string $operation) => $operation !== 'edit'),
+                    ->hidden(fn(string $operation) => $operation !== 'edit'),
 
                 Textarea::make('error_message')
                     ->label('Error Message')
@@ -59,8 +75,23 @@ class TranscriptionsForm
                     ->rows(3)
                     ->maxLength(1000)
                     ->columnSpanFull()
-                    ->hidden(fn (string $operation) => $operation !== 'edit'),
-            ]);
+                    ->hidden(fn(string $operation) => $operation !== 'edit'),
 
+                // Inside your configure method:
+                DateTimePicker::make('created_at')
+                    ->label('Created At')
+                    ->native(false)
+                    ->displayFormat('Y-m-d H:i:s')
+                    ->timezone('UTC')
+                    ->hiddenOn(['create']), // Only show when editing
+
+                DateTimePicker::make('updated_at')
+                    ->label('Last Updated')
+                    ->native(false)
+                    ->displayFormat('Y-m-d H:i:s')
+                    ->timezone('UTC')
+                    ->hiddenOn(['create']), // Only show when editing
+
+            ]);
     }
 }

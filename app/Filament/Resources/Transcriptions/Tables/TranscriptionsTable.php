@@ -69,11 +69,11 @@ class TranscriptionsTable
                         return $query
                             ->when($data['created_from'] ?? null, 
                             function ($q, $date) {
-                                return $q->where('created_at', '>=', $date);
+                                return $q->whereDate('created_at', '>=', $date);
                             })
                             ->when($data['created_until'] ?? null, 
                             function ($q, $date) {
-                                return $q->where('created_at', '<=', $date);
+                                return $q->whereDate('created_at', '<=', $date);
                             });
                     }),
             ])

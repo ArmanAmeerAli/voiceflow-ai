@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
+use App\Models\Project;
 
 class Transcriptions extends Model
 {
@@ -15,6 +16,7 @@ class Transcriptions extends Model
      */
     protected $fillable = [
         'user_id',
+        'project_id', 
         'title',
         'audio_file_path',
         'transcription',
@@ -53,5 +55,13 @@ class Transcriptions extends Model
     public function user(): BelongsTo // BelongsTo links Two Models
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the project that this transcription is belongs to.
+     */
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 }
