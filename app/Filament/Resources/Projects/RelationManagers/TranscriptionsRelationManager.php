@@ -99,7 +99,7 @@ class TranscriptionsRelationManager extends RelationManager
                 DeleteAction::make(),
                 Action::make('downloadTranscription')
                     ->label('Download Transcription')
-                    ->icon('heroicon-o-download')
+                    ->icon('lucide-download')
                     ->visible(fn ($record) => $record->status === 'completed')
                     ->action(function () {
                         // Add your download logic here
