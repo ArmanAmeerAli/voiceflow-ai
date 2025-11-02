@@ -18,6 +18,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Widgets\AllTranscriptions;
+use App\Filament\Widgets\TranscriptionCompletion;
 
 class DashboardPanelProvider extends PanelProvider
 {
@@ -40,8 +42,10 @@ class DashboardPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
+                AllTranscriptions::class,
+                TranscriptionCompletion::class
             ])
             ->middleware([
                 EncryptCookies::class,
