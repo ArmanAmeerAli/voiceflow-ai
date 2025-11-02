@@ -9,6 +9,8 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Transcriptions;
 use Illuminate\Support\Facades\Log;
+use Filament\Notifications\Notification;
+use App\Models\User;
 
 class ProcessTranscriptions implements ShouldQueue
 {
@@ -52,7 +54,13 @@ class ProcessTranscriptions implements ShouldQueue
                 'status' => 'completed',
             ]);
 
-            
+            $user = User::find($this->transcription->user_id); // in user class, find from database this user (that user who is this transcription's assigned user)
+
+            Notification::make()
+                ->title('Transcription Generated')
+                ->body('Your transcription has been completed successfully.')
+                ->success()
+                ->sendToDatabase($user);
             
         } catch (\Exception $e) {
             Log::error('Transcription Processing failed: ' . $e->getMessage(), [
