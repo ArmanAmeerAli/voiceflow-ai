@@ -32,7 +32,7 @@ class DashboardPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->databaseNotifications()
-            ->brandName("VoiceFlow AI")
+            ->brandName("VoiceFlow AIalksjdkla")
             ->colors([
                 'primary' => Color::Amber,
             ])

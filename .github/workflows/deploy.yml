@@ -19,22 +19,24 @@ jobs:
 
             cd /home/deploy/voiceflow-ai
 
-            git reset --hard HEAD
+            sudo chown -R deploy:www-data /home/deploy/voiceflow-ai
+
+            git fetch origin
+            git reset --hard origin/main
             git pull origin main
 
             composer install --no-dev --optimize-autoloader
-
             npm install
             npm run build
 
-            php artisan config:clear
-            php artisan cache:clear
-            php artisan route:clear
-            php artisan view:clear
+            php artisan migrate --force
+
+            php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
-            chmod -R 775 storage bootstrap/cache
+            sudo chown -R deploy:www-data /home/deploy/voiceflow-ai
+            sudo chmod -R 775 storage bootstrap/cache
 
-            systemctl reload php8.3-fpm || sudo systemctl reload php8.3-fpm
+            sudo systemctl reload php8.3-fpm
