@@ -11,6 +11,7 @@ use App\Models\Transcriptions;
 use Illuminate\Support\Facades\Log;
 use Filament\Notifications\Notification;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 
 class ProcessTranscriptions implements ShouldQueue
 {
@@ -85,23 +86,17 @@ class ProcessTranscriptions implements ShouldQueue
     */
     public function callTranscriptionApi(string $audioFilePath): array
     {
-        // This is a dummy implementation that simulates an API call
-        // In a real application, you would make an actual HTTP request to a 
-        // For example, using OpenAI's whisper API. Google Speech-to-Text, etc.
-        
-        // Simulate API processing time
-        sleep(2);
+        // Call transcription API
+        $response = Http::post('https://voiceflow.armanhub.com/api/transcribe', [
+            // Send file (not path)
+            'audio' => file_get_contents($audioFilePath),
+        ]);
 
-        // Simulate a 10% chance of failure for testing purposes
-        if (rand(1, 10) === 1) {
-            throw new \Exception('Failed to transcribe audio file');
-        }
+        $response = $response->json();
 
-        // Return a dummy response
         return [
-            'transcript' => 'This is a dummy transcription',
-            'language' => 'en',
-            'confidence' => 0.95,
+            'transcript' => $response['text'],
+            'language' => $response['language'],
         ];  
     }
 
